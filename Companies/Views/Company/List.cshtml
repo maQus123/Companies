@@ -4,8 +4,9 @@
     ViewData["Title"] = "Firmenübersicht";
 }
 
-<h1>Firmenübersicht</h1>
-
+<br />
+<h1>@ViewData["Title"]</h1>
+<br />
 <div class="table-responsive">
     <table class="table table-hover">
         <thead>
@@ -23,7 +24,7 @@
                     <tr>
                         <td>@company.Id</td>
                         <td>@company.Title</td>
-                        <td>@company.Branch</td>
+                        <td>@company.Branch.Description()</td>
                         <td>@company.AmountEmployees</td>
                         <td>@company.Town</td>
                     </tr>
@@ -36,3 +37,5 @@
         </tbody>
     </table>
 </div>
+<br />
+<a class="btn btn-primary" asp-route="createCompany">Neue Firma</a>

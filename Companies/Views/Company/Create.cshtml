@@ -1,0 +1,32 @@
+﻿@model Companies.Models.Company
+
+@{
+    ViewData["Title"] = "Neue Firma";
+}
+
+<br />
+<h1>@ViewData["Title"]</h1>
+<br />
+<form method="post" asp-action="Create" asp-controller="Company">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label for="@nameof(Model.Title)">Firmenname</label>
+        <input name="@nameof(Model.Title)" type="text" id="@nameof(Model.Title)" class="form-control" maxlength="50" required="required">
+    </div>
+    <div class="form-group">
+        <label for="@nameof(Model.Branch)">Branche</label>
+        <select name="@nameof(Model.Branch)" asp-items="Html.GetEnumSelectList<Branch>()" class="form-control" id="@nameof(Model.Branch)" required="required">
+            <option selected="selected" disabled>Bitte wählen</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="@nameof(Model.Town)">Stadt</label>
+        <input name="@nameof(Model.Town)" type="text" id="@nameof(Model.Town)" maxlength="50" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="@nameof(Model.AmountEmployees)">Anzahl Mitarbeiter</label>
+        <input name="@nameof(Model.AmountEmployees)" type="number" class="form-control" id="@nameof(Model.AmountEmployees)" min="1" max="1000000" step="1">
+    </div>
+    <button type="submit" class="btn btn-primary">Speichern</button>
+    <a class="btn" asp-route="listCompanies">Abbrechen</a>
+</form>

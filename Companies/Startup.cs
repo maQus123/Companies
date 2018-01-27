@@ -31,8 +31,13 @@
             app.UseStaticFiles();
             app.UseMvc(routes => {
                 routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    name: "listCompanies",
+                    template: "",
+                    defaults: new { controller = "Company", action = "List" });
+                routes.MapRoute(
+                    name: "createCompany",
+                    template: "create-company",
+                    defaults: new { controller = "Company", action = "Create" });
             });
         }
 
