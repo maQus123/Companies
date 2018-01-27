@@ -1,7 +1,10 @@
 ﻿namespace Companies {
 
+    using Companies.Persistence;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Routing;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -14,7 +17,10 @@
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services) {
+            services.AddDbContextPool<DatabaseContext>(options => options.UseInMemoryDatabase("Database"));
             services.AddMvc();
+            services.Configure<RouteOptions>(options => { options.AppendTrailingSlash = true; options.LowercaseUrls = true; });
+            services.AddScoped<ICompanyRepository, CompanyRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
