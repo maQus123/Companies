@@ -2,39 +2,40 @@
 
     using System;
     using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
 
     public enum Branch {
 
-        [Description("Fleischverarbeitung")]
+        [Display(Name = "Fleischverarbeitung")]
         Fleischverarbeitung = 1,
 
-        [Description("Garten- und Landschaftsbau")]
+        [Display(Name = "Garten- und Landschaftsbau")]
         GartenLandschaftsbau = 2,
 
-        [Description("IT-Dienstleistungen")]
+        [Display(Name = "IT-Dienstleistungen")]
         ITDienstleistungen = 3,
 
-        [Description("Luft- und Raumfahrttechnik")]
+        [Display(Name = "Luft- und Raumfahrttechnik")]
         LuftRaumfahrttechnik = 4,
 
-        [Description("Unterhaltungselektronik")]
+        [Display(Name = "Unterhaltungselektronik")]
         Unterhaltungselektronik = 5
 
     }
 
     public static class Extensions {
 
-        public static string Description(this Enum @enum) {
-            var description = string.Empty;
+        public static string DisplayName(this Enum @enum) {
+            var displayName = string.Empty;
             var fields = @enum.GetType().GetFields();
             foreach (var field in fields) {
-                var descriptionAttribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
-                if (descriptionAttribute != null && field.Name.Equals(@enum.ToString(), StringComparison.InvariantCultureIgnoreCase)) {
-                    description = descriptionAttribute.Description;
+                var displayNameAttribute = Attribute.GetCustomAttribute(field, typeof(DisplayAttribute)) as DisplayAttribute;
+                if (displayNameAttribute != null && field.Name.Equals(@enum.ToString(), StringComparison.InvariantCultureIgnoreCase)) {
+                    displayName = displayNameAttribute.Name;
                     break;
                 }
             }
-            return description;
+            return displayName;
         }
 
     }

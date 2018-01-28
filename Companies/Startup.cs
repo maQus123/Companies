@@ -36,8 +36,12 @@
                     defaults: new { controller = "Company", action = "List" });
                 routes.MapRoute(
                     name: "createCompany",
-                    template: "create-company",
+                    template: "create",
                     defaults: new { controller = "Company", action = "Create" });
+                routes.MapRoute(
+                    name: "editCompany",
+                    template: "edit/{id:int}",
+                    defaults: new { controller = "Company", action = "Edit" });
             });
         }
 

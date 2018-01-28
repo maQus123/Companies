@@ -10,7 +10,13 @@
 
         Task<IEnumerable<Company>> GetAll();
 
-        Task<bool> IsUnique(string title);
+        Task<Dictionary<int, string>> GetListOfCompanies();
+
+        Task<Company> GetSingle(int id);
+
+        Task<bool> IsUnique(string title, int id = 0);
+
+        Task Update(Company existingCompany);
 
     }
 
