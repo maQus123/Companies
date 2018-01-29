@@ -25,27 +25,47 @@
             return companies;
         }
 
-        public async Task<Dictionary<int, string>> GetListOfCompanies() {
-            var listOfCompanies = new Dictionary<int, string>();
-            var companies = await this.GetAll();
-            foreach (var company in companies) {
-                listOfCompanies.Add(company.Id, company.Title);
+        public int GetHierarchicalLevel(Company company) {
+            var level = 0;
+            if (null != company.ParentCompany) {
+                level++;
+                level += this.GetHierarchicalLevel(company.ParentCompany);
             }
-            return listOfCompanies;
+            return level;
         }
 
-        public async Task<Company> GetSingle(int id) {
+        public async Task<Dictionary<int, string>> GetParentCompanies() {
+            return await this.GetParentCompanies(0);
+        }
+
+        public async Task<Dictionary<int, string>> GetParentCompanies(int excludedCompanyId) {
+            var parentCompanies = new Dictionary<int, string>();
+            var companies = await this.GetAll();
+            foreach (var company in companies) {
+                if (excludedCompanyId != company.Id) {
+                    parentCompanies.Add(company.Id, company.Title);
+                }
+            }
+            return parentCompanies;
+        }
+
+        public Company GetSingle(int id) {
+            var company = this.dbContext.Companies.SingleOrDefault(c => c.Id == id);
+            return company;
+        }
+
+        public async Task<Company> GetSingle(int? id) {
             var company = await this.dbContext.Companies.SingleOrDefaultAsync(c => c.Id == id);
             return company;
         }
 
-        public async Task<bool> IsUnique(string title, int id = 0) {
-            bool doesOccur;
-            if (id == 0) {
-                doesOccur = await this.dbContext.Companies.AnyAsync(p => p.Title.ToLowerInvariant() == title.ToLowerInvariant());
-            } else {
-                doesOccur = await this.dbContext.Companies.AnyAsync(p => p.Title.ToLowerInvariant() == title.ToLowerInvariant() && p.Id != id);
-            }            
+        public async Task<bool> IsUnique(string title) {
+            var doesOccur = await this.dbContext.Companies.AnyAsync(p => p.Title.ToLowerInvariant() == title.ToLowerInvariant());
+            return !doesOccur;
+        }
+
+        public async Task<bool> IsUnique(string title, int idOfOwnCompany) {
+            var doesOccur = await this.dbContext.Companies.AnyAsync(p => p.Title.ToLowerInvariant() == title.ToLowerInvariant() && p.Id != idOfOwnCompany);
             return !doesOccur;
         }
 

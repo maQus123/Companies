@@ -16,6 +16,8 @@
                 <th scope="col">Branche</th>
                 <th scope="col">Anzahl Mitarbeiter</th>
                 <th scope="col">Stadt</th>
+                <th scope="col">Mutterfirma</th>
+                <th scope="col">Ebene</th>
             </tr>
         </thead>
         <tbody>
@@ -26,12 +28,18 @@
                         <td>@company.Title</td>
                         <td>@company.Branch.DisplayName()</td>
                         <td>@company.AmountEmployees</td>
-                        <td>@company.Town</td>
+                        <td>@company.City</td>
+                        @if (null == company.ParentCompany) {
+                            <td></td>
+                        } else {
+                            <td>@company.ParentCompany.Title</td>
+                        }
+                        <td>@company.HierarchicalLevel</td>
                     </tr>
                 }
             } else {
                 <tr>
-                    <td>Keine Firmen gefunden</td>
+                    <td colspan="7">Keine Firmen gefunden</td>
                 </tr>
             }
         </tbody>

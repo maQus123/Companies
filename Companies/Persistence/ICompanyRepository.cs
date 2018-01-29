@@ -10,14 +10,22 @@
 
         Task<IEnumerable<Company>> GetAll();
 
-        Task<Dictionary<int, string>> GetListOfCompanies();
+        int GetHierarchicalLevel(Company company);
 
-        Task<Company> GetSingle(int id);
+        Task<Dictionary<int, string>> GetParentCompanies();
 
-        Task<bool> IsUnique(string title, int id = 0);
+        Task<Dictionary<int, string>> GetParentCompanies(int excludedCompanyId);
+
+        Company GetSingle(int id);
+
+        Task<Company> GetSingle(int? id);
+
+        Task<bool> IsUnique(string title);
+
+        Task<bool> IsUnique(string title, int id);
 
         Task Update(Company existingCompany);
-
+        
     }
 
 }

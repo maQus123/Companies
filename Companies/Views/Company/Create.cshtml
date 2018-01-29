@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Neue Firma";
+    var parentCompanies = (IEnumerable<SelectListItem>)@ViewData["ParentCompanies"];
 }
 
 <br />
@@ -27,16 +28,16 @@
         <span asp-validation-for="@Model.AmountEmployees" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label for="Town">Stadt</label>
-        <input asp-for="@Model.Town" type="text" maxlength="50" class="form-control">
-        <span asp-validation-for="@Model.Town" class="text-danger"></span>
+        <label for="City">Stadt</label>
+        <input asp-for="@Model.City" type="text" maxlength="50" class="form-control">
+        <span asp-validation-for="@Model.City" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label for="ParentCompany">Mutterfirma</label>
-        <select asp-for="@Model.ParentCompany" asp-items="(IEnumerable<SelectListItem>)@ViewData["ParentCompanies"]" class="form-control">
+        <label for="ParentCompanyId">Mutterfirma</label>
+        <select asp-for="@Model.ParentCompanyId" asp-items="@parentCompanies" class="form-control">
             <option selected="selected" disabled="disabled">Bitte wählen</option>
         </select>
-        <span asp-validation-for="@Model.ParentCompany" class="text-danger"></span>
+        <span asp-validation-for="@Model.ParentCompanyId" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">Speichern</button>
     <a class="btn" asp-route="listCompanies">Abbrechen</a>
