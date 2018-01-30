@@ -10,6 +10,8 @@
 
         Task<IEnumerable<Company>> GetAll();
 
+        Task<IEnumerable<Company>> GetAll(Branch? branch, string textContains = "");
+
         int GetHierarchicalLevel(Company company);
 
         Task<Dictionary<int, string>> GetParentCompanies();

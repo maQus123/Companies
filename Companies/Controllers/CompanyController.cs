@@ -4,6 +4,7 @@
     using Companies.Persistence;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     public class CompanyController : Controller {
@@ -75,6 +76,11 @@
                 if (null != editedCompany.ParentCompanyId) {
                     var parentCompany = await this.companyRepository.GetSingle(editedCompany.ParentCompanyId);
                     if (null != parentCompany) {
+                        if (parentCompany.ParentCompanyId == existingCompany.Id) {
+                            await this.PopulateListOfParentCompanies(id);
+                            ModelState.AddModelError(nameof(Company.ParentCompanyId), "Zirkelbezug nicht zulässig.");
+                            return View(editedCompany);
+                        }
                         editedCompany.ParentCompany = parentCompany;
                     }
                 }
@@ -85,12 +91,13 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> List() {
-            var companies = await this.companyRepository.GetAll();
+        public async Task<IActionResult> List(ListViewModel listViewModel) {
+            var companies = await this.companyRepository.GetAll(listViewModel.FilteredBranch, listViewModel.TextContains);
             foreach (var company in companies) {
                 company.HierarchicalLevel = this.companyRepository.GetHierarchicalLevel(company);
             }
-            return View(companies);
+            listViewModel.Companies = companies;
+            return View(listViewModel);
         }
 
         private async Task PopulateListOfParentCompanies() {

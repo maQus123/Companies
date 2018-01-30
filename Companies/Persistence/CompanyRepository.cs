@@ -25,6 +25,17 @@
             return companies;
         }
 
+        public async Task<IEnumerable<Company>> GetAll(Branch? branch, string textContains = "") {
+            IEnumerable<Company> companies;
+            //TODO Add textContains to LINQ Query
+            if (null != branch) {
+                companies = await this.dbContext.Companies.Where(c => c.Branch == branch).OrderBy(c => c.Title).ToListAsync();
+            } else {
+                companies = await this.GetAll();
+            }
+            return companies;
+        }
+
         public int GetHierarchicalLevel(Company company) {
             var level = 0;
             if (null != company.ParentCompany) {
