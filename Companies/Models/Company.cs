@@ -22,11 +22,11 @@
 
         [Required(ErrorMessage = "Firmenname ist ein Pflichtfeld.")]
         [StringLength(50, ErrorMessage = "Firmenname mit max. 50 Zeichen.")]
-        [RegularExpression(@"^[a-zA-Z0-9'\säÄöÖüÜß.]*$", ErrorMessage = "Firmenname darf nur Zeichen aus dem deutschen Alphabet enthalten.")]
+        [RegularExpression(@"^[a-zA-Z0-9'\säÄöÖüÜß.-]*$", ErrorMessage = "Firmenname darf nur Zeichen aus dem deutschen Alphabet enthalten.")]
         public string Title { get; set; }
 
         [StringLength(50, ErrorMessage = "Stadt mit max. 50 Zeichen.")]
-        [RegularExpression(@"^[a-zA-Z0-9'\s-äÄöÖüÜß.]*$", ErrorMessage = "Stadt darf nur Zeichen aus dem deutschen Alphabet enthalten.")]
+        [RegularExpression(@"^[a-zA-Z0-9'\s-äÄöÖüÜß.-]*$", ErrorMessage = "Stadt darf nur Zeichen aus dem deutschen Alphabet enthalten.")]
         public string City { get; set; }
 
         public Company() {

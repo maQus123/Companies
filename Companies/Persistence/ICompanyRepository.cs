@@ -8,8 +8,6 @@
 
         Task Add(Company company);
 
-        Task<IEnumerable<Company>> GetAll();
-
         Task<IEnumerable<Company>> GetAll(Branch? branch, string textContains = "");
 
         int GetHierarchicalLevel(Company company);

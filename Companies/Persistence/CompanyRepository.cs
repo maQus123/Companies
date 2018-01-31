@@ -20,18 +20,41 @@
             return;
         }
 
-        public async Task<IEnumerable<Company>> GetAll() {
-            var companies = await this.dbContext.Companies.OrderBy(c => c.Title).ToListAsync();
-            return companies;
-        }
-
-        public async Task<IEnumerable<Company>> GetAll(Branch? branch, string textContains = "") {
-            IEnumerable<Company> companies;
-            //TODO Add textContains to LINQ Query
+        public async Task<IEnumerable<Company>> GetAll(Branch? branch, string text = "") {
+            var companies = await this.dbContext.Companies
+                .OrderBy(c => c.Title)
+                .ToListAsync();
             if (null != branch) {
-                companies = await this.dbContext.Companies.Where(c => c.Branch == branch).OrderBy(c => c.Title).ToListAsync();
-            } else {
-                companies = await this.GetAll();
+                companies = companies
+                    .Where(c => c.Branch == branch)
+                    .ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(text)) {
+                List<Company> filteredCompanies = new List<Company>();
+                foreach (var company in companies) {
+                    if (company.Title.Contains(text)) {
+                        filteredCompanies.Add(company);
+                    } else {
+                        if (null != company.City) {
+                            if (company.City.Contains(text)) {
+                                filteredCompanies.Add(company);
+                            } else {
+                                if (null != company.ParentCompany) {
+                                    if (company.ParentCompany.Title.Contains(text)) {
+                                        filteredCompanies.Add(company);
+                                    }
+                                }
+                            }
+                        } else {
+                            if (null != company.ParentCompany) {
+                                if (company.ParentCompany.Title.Contains(text)) {
+                                    filteredCompanies.Add(company);
+                                }
+                            }
+                        }
+                    }
+                }
+                companies = filteredCompanies;
             }
             return companies;
         }
@@ -51,7 +74,7 @@
 
         public async Task<Dictionary<int, string>> GetParentCompanies(int excludedCompanyId) {
             var parentCompanies = new Dictionary<int, string>();
-            var companies = await this.GetAll();
+            var companies = await this.GetAll(null, string.Empty);
             foreach (var company in companies) {
                 if (excludedCompanyId != company.Id) {
                     parentCompanies.Add(company.Id, company.Title);

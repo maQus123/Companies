@@ -8,12 +8,12 @@
 <h1>@ViewData["Title"]</h1>
 <br />
 <form method="get" class="form-inline">
-    <input asp-for="@Model.TextContains" type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" placeholder="(Mutter-)Firma oder Stadt">
+    <input asp-for="@Model.TextContains" type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" placeholder="(Mutter-)Firma oder Stadt..">
     <select asp-for="@Model.FilteredBranch" asp-items="Html.GetEnumSelectList<Branch>()" class="form-control mb-2 mr-sm-2 mb-sm-0">
         <option selected="selected">Alle</option>
     </select>
     <button type="submit" class="btn btn-secondary form-control mb-2 mr-sm-2 mb-sm-0">Filtern</button>
-    <button class="btn btn-light form-control mb-2 mr-sm-2 mb-sm-0">Zurücksetzen</button>
+    <button type="submit" class="btn btn-light form-control mb-2 mr-sm-2 mb-sm-0" id="resetFilterButton">Zurücksetzen</button>
 </form>
 <br />
 <div class="table-responsive">
