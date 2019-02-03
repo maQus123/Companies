@@ -21,40 +21,16 @@
         }
 
         public async Task<IEnumerable<Company>> GetAll(Branch? branch, string text = "") {
-            var companies = await this.dbContext.Companies
-                .OrderBy(c => c.Title)
-                .ToListAsync();
+            var companies = await this.dbContext.Companies.OrderBy(c => c.Title).ToListAsync();
             if (null != branch) {
-                companies = companies
-                    .Where(c => c.Branch == branch)
-                    .ToList();
+                companies = companies.FindAll(c => c.Branch == branch);
             }
-            if (!string.IsNullOrWhiteSpace(text)) {
-                List<Company> filteredCompanies = new List<Company>();
-                foreach (var company in companies) {
-                    if (company.Title.Contains(text)) {
-                        filteredCompanies.Add(company);
-                    } else {
-                        if (null != company.City) {
-                            if (company.City.Contains(text)) {
-                                filteredCompanies.Add(company);
-                            } else {
-                                if (null != company.ParentCompany) {
-                                    if (company.ParentCompany.Title.Contains(text)) {
-                                        filteredCompanies.Add(company);
-                                    }
-                                }
-                            }
-                        } else {
-                            if (null != company.ParentCompany) {
-                                if (company.ParentCompany.Title.Contains(text)) {
-                                    filteredCompanies.Add(company);
-                                }
-                            }
-                        }
-                    }
-                }
-                companies = filteredCompanies;
+            if (!string.IsNullOrEmpty(text)) {
+                text = text.ToLowerInvariant();
+                companies = companies.FindAll(c =>
+                   (c.Title?.ToLowerInvariant().Contains(text) ?? false) ||
+                   (c.City?.ToLowerInvariant().Contains(text) ?? false) ||
+                   (c.ParentCompany?.Title?.ToLowerInvariant().Contains(text) ?? false));
             }
             return companies;
         }
