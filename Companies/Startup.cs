@@ -3,6 +3,7 @@
     using Companies.Persistence;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Routing;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
@@ -18,16 +19,17 @@
 
         public void ConfigureServices(IServiceCollection services) {
             services.AddDbContextPool<DatabaseContext>(options => options.UseInMemoryDatabase("Database"));
-            services.AddMvc();
             services.Configure<RouteOptions>(options => { options.AppendTrailingSlash = true; options.LowercaseUrls = true; });
             services.AddScoped<ICompanyRepository, CompanyRepository>();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            return;
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
             if (env.IsDevelopment()) {
-                app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
             }
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseMvc(routes => {
                 routes.MapRoute(
@@ -43,6 +45,7 @@
                     template: "edit-company/{id:int}",
                     defaults: new { controller = "Company", action = "Edit" });
             });
+            return;
         }
 
     }

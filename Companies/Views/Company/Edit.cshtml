@@ -39,6 +39,9 @@
         </select>
         <span asp-validation-for="@Model.ParentCompanyId" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Speichern</button>
-    <a class="btn" asp-route="listCompanies">Abbrechen</a>
+    <div class="form-group">
+        <br />
+        <button type="submit" class="btn btn-primary">Speichern</button>
+        <a class="btn btn-light" asp-route="listCompanies">Abbrechen</a>
+    </div>
 </form>
