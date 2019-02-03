@@ -3,7 +3,7 @@
         window.location = $(this).data("href");
     });
     $("#resetFilterButton").click(function () {
-        $("#TextContains").val("");
+        $("#SearchText").val("");
         $("#FilteredBranch").val("Alle");
     });
 });

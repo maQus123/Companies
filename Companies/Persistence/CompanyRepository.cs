@@ -20,37 +20,35 @@
             return;
         }
 
-        public async Task<IEnumerable<Company>> GetAll(Branch? branch, string text = "") {
-            var companies = await this.dbContext.Companies.OrderBy(c => c.Title).ToListAsync();
+        public async Task<int> CountCompanies(Branch? branch, string searchText = "") {
+            var companies = await this.GetAll(branch, searchText);
+            return companies.Count;
+        }
+
+        private async Task<ICollection<Company>> GetAll(Branch? branch, string searchText = "") {
+            var companies = await this.dbContext.Companies.ToListAsync();
             if (null != branch) {
                 companies = companies.FindAll(c => c.Branch == branch);
             }
-            if (!string.IsNullOrEmpty(text)) {
-                text = text.ToLowerInvariant();
+            if (!string.IsNullOrEmpty(searchText)) {
+                searchText = searchText.ToLowerInvariant();
                 companies = companies.FindAll(c =>
-                   (c.Title?.ToLowerInvariant().Contains(text) ?? false) ||
-                   (c.City?.ToLowerInvariant().Contains(text) ?? false) ||
-                   (c.ParentCompany?.Title?.ToLowerInvariant().Contains(text) ?? false));
+                   (c.Title?.ToLowerInvariant().Contains(searchText) ?? false) ||
+                   (c.City?.ToLowerInvariant().Contains(searchText) ?? false) ||
+                   (c.ParentCompany?.Title?.ToLowerInvariant().Contains(searchText) ?? false));
             }
             return companies;
         }
-
-        public int GetHierarchicalLevel(Company company) {
-            var level = 0;
-            if (null != company.ParentCompany) {
-                level++;
-                level += this.GetHierarchicalLevel(company.ParentCompany);
-            }
-            return level;
-        }
-
-        public async Task<Dictionary<int, string>> GetParentCompanies() {
-            return await this.GetParentCompanies(0);
+ 
+        public async Task<ICollection<Company>> GetAll(int pageSize, int currentPage, Branch? branch, string searchText = "") {
+            var companies = await this.GetAll(branch, searchText);
+            companies = companies.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+            return companies;
         }
 
         public async Task<Dictionary<int, string>> GetParentCompanies(int excludedCompanyId) {
             var parentCompanies = new Dictionary<int, string>();
-            var companies = await this.GetAll(null, string.Empty);
+            var companies = await this.dbContext.Companies.ToListAsync();
             foreach (var company in companies) {
                 if (excludedCompanyId != company.Id) {
                     parentCompanies.Add(company.Id, company.Title);
@@ -59,23 +57,13 @@
             return parentCompanies;
         }
 
-        public Company GetSingle(int id) {
-            var company = this.dbContext.Companies.SingleOrDefault(c => c.Id == id);
-            return company;
-        }
-
-        public async Task<Company> GetSingle(int? id) {
+        public async Task<Company> GetSingle(int id) {
             var company = await this.dbContext.Companies.SingleOrDefaultAsync(c => c.Id == id);
             return company;
         }
 
-        public async Task<bool> IsUnique(string title) {
-            var doesOccur = await this.dbContext.Companies.AnyAsync(p => p.Title.ToLowerInvariant() == title.ToLowerInvariant());
-            return !doesOccur;
-        }
-
-        public async Task<bool> IsUnique(string title, int idOfOwnCompany) {
-            var doesOccur = await this.dbContext.Companies.AnyAsync(p => p.Title.ToLowerInvariant() == title.ToLowerInvariant() && p.Id != idOfOwnCompany);
+        public async Task<bool> IsUnique(string title, int ownCompanyId = 0) {
+            var doesOccur = await this.dbContext.Companies.AnyAsync(p => p.Title.ToLowerInvariant() == title.ToLowerInvariant() && p.Id != ownCompanyId);
             return !doesOccur;
         }
 

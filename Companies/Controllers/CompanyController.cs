@@ -32,8 +32,8 @@
                 ModelState.AddModelError(nameof(Company.Title), "Firmenname bereits vergeben.");
                 return View(company);
             }
-            if (null != company.ParentCompanyId) {
-                var parentCompany = await this.companyRepository.GetSingle(company.ParentCompanyId);
+            if (company.ParentCompanyId.HasValue) {
+                var parentCompany = await this.companyRepository.GetSingle(company.ParentCompanyId.Value);
                 if (null != parentCompany) {
                     company.ParentCompany = parentCompany;
                 }
@@ -44,7 +44,7 @@
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id) {
-            var company = await this.companyRepository.GetSingle((int?)id);
+            var company = await this.companyRepository.GetSingle(id);
             if (null == company) {
                 return NotFound();
             }
@@ -58,7 +58,7 @@
                 await this.PopulateListOfParentCompanies(id);
                 return View(editedCompany);
             }
-            var existingCompany = await this.companyRepository.GetSingle((int?)id);
+            var existingCompany = await this.companyRepository.GetSingle(id);
             if (null == existingCompany) {
                 return NotFound();
             }
@@ -72,8 +72,8 @@
                 return View(editedCompany);
             }
             if (existingCompany.ParentCompanyId != editedCompany.ParentCompanyId) {
-                if (null != editedCompany.ParentCompanyId) {
-                    var parentCompany = await this.companyRepository.GetSingle(editedCompany.ParentCompanyId);
+                if (editedCompany.ParentCompanyId.HasValue) {
+                    var parentCompany = await this.companyRepository.GetSingle(editedCompany.ParentCompanyId.Value);
                     if (null != parentCompany) {
                         if (parentCompany.ParentCompanyId == existingCompany.Id) {
                             await this.PopulateListOfParentCompanies(id);
@@ -91,20 +91,12 @@
 
         [HttpGet]
         public async Task<IActionResult> List(ListViewModel listViewModel) {
-            var companies = await this.companyRepository.GetAll(listViewModel.FilteredBranch, listViewModel.TextContains);
-            foreach (var company in companies) {
-                company.HierarchicalLevel = this.companyRepository.GetHierarchicalLevel(company);
-            }
-            listViewModel.Companies = companies;
+            listViewModel.Companies = await this.companyRepository.GetAll(listViewModel.PageSize, listViewModel.CurrentPage, listViewModel.FilteredBranch, listViewModel.SearchText);
+            listViewModel.CompaniesCount = await this.companyRepository.CountCompanies(listViewModel.FilteredBranch, listViewModel.SearchText);
             return View(listViewModel);
         }
 
-        private async Task PopulateListOfParentCompanies() {
-            await this.PopulateListOfParentCompanies(0);
-            return;
-        }
-
-        private async Task PopulateListOfParentCompanies(int excludedCompanyId) {
+        private async Task PopulateListOfParentCompanies(int excludedCompanyId = 0) {
             var parentCompanies = await this.companyRepository.GetParentCompanies(excludedCompanyId);
             ViewData["ParentCompanies"] = new SelectList(parentCompanies, "Key", "Value");
             return;

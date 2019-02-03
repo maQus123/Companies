@@ -8,11 +8,11 @@
 <h1>@ViewData["Title"]</h1>
 <br />
 <form method="get" class="form-inline">
-    <input asp-for="@Model.TextContains" type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" placeholder="Suche">
+    <input asp-for="@Model.SearchText" type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" placeholder="Suche">
     <select asp-for="@Model.FilteredBranch" asp-items="Html.GetEnumSelectList<Branch>()" class="form-control mb-2 mr-sm-2 mb-sm-0">
         <option selected="selected">Alle</option>
     </select>
-    <button type="submit" class="btn btn-secondary form-control mb-2 mr-sm-2 mb-sm-0">Suchen</button>
+    <button type="submit" class="btn btn-primary form-control mb-2 mr-sm-2 mb-sm-0">Suchen</button>
     <button type="submit" class="btn btn-light form-control mb-2 mr-sm-2 mb-sm-0" id="resetFilterButton">Zurücksetzen</button>
 </form>
 <br />
@@ -23,7 +23,7 @@
                 <th scope="col">Firmen-Nr.</th>
                 <th scope="col">Firmenname</th>
                 <th scope="col">Branche</th>
-                <th scope="col">Anzahl Mitarbeiter</th>
+                <th scope="col">Anz. MA</th>
                 <th scope="col">Stadt</th>
                 <th scope="col">Mutterfirma</th>
                 <th scope="col">Ebene</th>
@@ -54,5 +54,17 @@
         </tbody>
     </table>
 </div>
-<br />
-<a class="btn btn-primary" asp-route="createCompany">Neue Firma</a>
+<div class="btn-toolbar justify-content-between">
+    <div class="input-group">
+        <a class="btn btn-primary form-control" asp-route="createCompany">Neue Firma</a>
+    </div>
+    <div class="btn-group">
+        <ul class="pagination">
+            @for (var i = 1; i <= Model.TotalPages; i++) {
+                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                    <a asp-route-currentpage="@i" asp-route-searchtext="@Model.SearchText" asp-route-filteredbranch="@Model.FilteredBranch" class="page-link">@i</a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

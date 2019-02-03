@@ -8,24 +8,18 @@
 
         Task Add(Company company);
 
-        Task<IEnumerable<Company>> GetAll(Branch? branch, string textContains = "");
+        Task<int> CountCompanies(Branch? branch, string text = "");
 
-        int GetHierarchicalLevel(Company company);
-
-        Task<Dictionary<int, string>> GetParentCompanies();
-
+        Task<ICollection<Company>> GetAll(int pageSize, int currentPage, Branch? branch, string textContains = "");
+        
         Task<Dictionary<int, string>> GetParentCompanies(int excludedCompanyId);
 
-        Company GetSingle(int id);
+        Task<Company> GetSingle(int id);
 
-        Task<Company> GetSingle(int? id);
-
-        Task<bool> IsUnique(string title);
-
-        Task<bool> IsUnique(string title, int id);
+        Task<bool> IsUnique(string title, int ownCompanyId = 0);
 
         Task Update(Company existingCompany);
-        
+                
     }
 
 }

@@ -14,7 +14,9 @@
         public int Id { get; private set; }
 
         [NotMapped]
-        public int HierarchicalLevel { get; set; }
+        public int HierarchicalLevel {
+            get { return this.CalculateHierarchicalLevel(); }
+        }
 
         public int? ParentCompanyId { get; set; }
 
@@ -31,6 +33,15 @@
 
         public Company() {
             //nothing to do
+        }
+
+        private int CalculateHierarchicalLevel() {
+            var level = 0;
+            if (null != this.ParentCompany) {
+                level++;
+                level += this.ParentCompany.CalculateHierarchicalLevel();
+            }
+            return level;
         }
 
         public void UpdateFrom(Company company) {
