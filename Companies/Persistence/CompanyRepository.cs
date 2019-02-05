@@ -21,27 +21,30 @@
         }
 
         public async Task<int> CountCompanies(Branch? branch, string searchText = "") {
-            var companies = await this.GetAll(branch, searchText);
+            var companies = await this.GetAll(branch, searchText, string.Empty);
             return companies.Count;
         }
 
-        private async Task<ICollection<Company>> GetAll(Branch? branch, string searchText = "") {
-            var companies = await this.dbContext.Companies.ToListAsync();
+        private async Task<ICollection<Company>> GetAll(Branch? branch, string searchText = "", string sortBy = "") {
+            var companies = this.dbContext.Companies.AsQueryable();
             if (null != branch) {
-                companies = companies.FindAll(c => c.Branch == branch);
+                companies = companies.Where(c => c.Branch == branch);
             }
             if (!string.IsNullOrEmpty(searchText)) {
                 searchText = searchText.ToLowerInvariant();
-                companies = companies.FindAll(c =>
-                   (c.Title?.ToLowerInvariant().Contains(searchText) ?? false) ||
-                   (c.City?.ToLowerInvariant().Contains(searchText) ?? false) ||
-                   (c.ParentCompany?.Title?.ToLowerInvariant().Contains(searchText) ?? false));
+                companies = companies.Where(c => 
+                    (c.Title != null && c.Title.ToLowerInvariant().Contains(searchText)) || 
+                    (c.City != null && c.City.ToLowerInvariant().Contains(searchText)) ||
+                    (c.ParentCompany != null && c.ParentCompany.Title != null && c.ParentCompany.Title.ToLowerInvariant().Contains(searchText)));
             }
-            return companies;
+            if (!string.IsNullOrEmpty(sortBy)) {
+                // TODO: Add sorting
+            }
+            return await companies.ToListAsync();
         }
- 
-        public async Task<ICollection<Company>> GetAll(int pageSize, int currentPage, Branch? branch, string searchText = "") {
-            var companies = await this.GetAll(branch, searchText);
+
+        public async Task<ICollection<Company>> GetAll(int pageSize, int currentPage, Branch? branch, string searchText = "", string sortBy = "") {
+            var companies = await this.GetAll(branch, searchText, sortBy);
             companies = companies.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
             return companies;
         }

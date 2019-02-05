@@ -10,7 +10,7 @@
 
         Task<int> CountCompanies(Branch? branch, string text = "");
 
-        Task<ICollection<Company>> GetAll(int pageSize, int currentPage, Branch? branch, string textContains = "");
+        Task<ICollection<Company>> GetAll(int pageSize, int currentPage, Branch? branch, string textContains = "", string sortBy = "");
         
         Task<Dictionary<int, string>> GetParentCompanies(int excludedCompanyId);
 

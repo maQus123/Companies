@@ -91,7 +91,7 @@
 
         [HttpGet]
         public async Task<IActionResult> List(ListViewModel listViewModel) {
-            listViewModel.Companies = await this.companyRepository.GetAll(listViewModel.PageSize, listViewModel.CurrentPage, listViewModel.FilteredBranch, listViewModel.SearchText);
+            listViewModel.Companies = await this.companyRepository.GetAll(listViewModel.PageSize, listViewModel.CurrentPage, listViewModel.FilteredBranch, listViewModel.SearchText, listViewModel.SortBy);
             listViewModel.CompaniesCount = await this.companyRepository.CountCompanies(listViewModel.FilteredBranch, listViewModel.SearchText);
             return View(listViewModel);
         }
