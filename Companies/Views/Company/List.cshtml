@@ -2,6 +2,15 @@
 
 @{
     ViewData["Title"] = "Firmenübersicht";
+    var columns = new List<KeyValuePair<string, string>>() {
+        new KeyValuePair<string, string>(nameof(Company.Id), "#"),
+        new KeyValuePair<string, string>(nameof(Company.Title), "Firmenname"),
+        new KeyValuePair<string, string>(nameof(Company.Branch), "Branche"),
+        new KeyValuePair<string, string>(nameof(Company.AmountEmployees), "Anz. MA"),
+        new KeyValuePair<string, string>(nameof(Company.City), "Stadt"),
+        new KeyValuePair<string, string>(nameof(Company.ParentCompany), "Mutterfirma"),
+        new KeyValuePair<string, string>(nameof(Company.HierarchicalLevel), "Ebene")
+    };
 }
 
 <br />
@@ -20,13 +29,9 @@
     <table class="table table-hover table-bordered">
         <thead class="thead-light">
             <tr>
-                <th scope="col"><a asp-route-sortby="@nameof(Company.Id)">Firmen-Nr.</a></th>
-                <th scope="col"><a asp-route-sortby="@nameof(Company.Title)">Firmenname</a></th>
-                <th scope="col"><a asp-route-sortby="@nameof(Company.Branch)">Branche</a></th>
-                <th scope="col"><a asp-route-sortby="@nameof(Company.AmountEmployees)">Anz. MA</a></th>
-                <th scope="col"><a asp-route-sortby="@nameof(Company.City)">Stadt</a></th>
-                <th scope="col"><a asp-route-sortby="@nameof(Company.ParentCompany)">Mutterfirma</a></th>
-                <th scope="col"><a asp-route-sortby="@nameof(Company.HierarchicalLevel)">Ebene</a></th>
+                @foreach (var column in columns) {
+                    <th scope="col"><table-headline sort-by="@Model.SortBy" current-page="@Model.CurrentPage" key="@column.Key" value="@column.Value" /></th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -61,15 +66,15 @@
     <div class="btn-group">
         <ul class="pagination">
             <li class="page-item @(!Model.ShowPrevious? "disabled":"")">
-                <a asp-route-currentpage="@(Model.CurrentPage -1)" asp-route-searchtext="@Model.SearchText" asp-route-filteredbranch="@Model.FilteredBranch" class="page-link">&laquo;</a>
+                <a asp-route-currentpage="@(Model.CurrentPage -1)" asp-route-searchtext="@Model.SearchText" asp-route-filteredbranch="@Model.FilteredBranch" asp-route-sortby="@Model.SortBy" class="page-link">&laquo;</a>
             </li>
             @for (var i = 1; i <= Model.TotalPages; i++) {
                 <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                    <a asp-route-currentpage="@i" asp-route-searchtext="@Model.SearchText" asp-route-filteredbranch="@Model.FilteredBranch" class="page-link">@i</a>
+                    <a asp-route-currentpage="@i" asp-route-searchtext="@Model.SearchText" asp-route-filteredbranch="@Model.FilteredBranch" asp-route-sortby="@Model.SortBy" class="page-link">@i</a>
                 </li>
             }
             <li class="page-item  @(!Model.ShowNext? "disabled":"")">
-                <a asp-route-currentpage="@(Model.CurrentPage + 1)" asp-route-searchtext="@Model.SearchText" asp-route-filteredbranch="@Model.FilteredBranch" class="page-link">&raquo;</a>
+                <a asp-route-currentpage="@(Model.CurrentPage + 1)" asp-route-searchtext="@Model.SearchText" asp-route-filteredbranch="@Model.FilteredBranch" asp-route-sortby="@Model.SortBy" class="page-link">&raquo;</a>
             </li>
         </ul>
     </div>

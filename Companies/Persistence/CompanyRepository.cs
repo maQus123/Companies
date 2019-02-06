@@ -4,6 +4,7 @@
     using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Dynamic.Core;
     using System.Threading.Tasks;
 
     public class CompanyRepository : ICompanyRepository {
@@ -38,7 +39,7 @@
                     (c.ParentCompany != null && c.ParentCompany.Title != null && c.ParentCompany.Title.ToLowerInvariant().Contains(searchText)));
             }
             if (!string.IsNullOrEmpty(sortBy)) {
-                // TODO: Add sorting
+                companies = companies.OrderBy(sortBy);
             }
             return await companies.ToListAsync();
         }
@@ -73,6 +74,12 @@
         public async Task Update(Company existingCompany) {
             this.dbContext.Companies.Update(existingCompany);
             await this.dbContext.SaveChangesAsync();
+            return;
+        }
+
+        public void Remove(Company company) {
+            this.dbContext.Remove(company);
+            this.dbContext.SaveChanges();
             return;
         }
 

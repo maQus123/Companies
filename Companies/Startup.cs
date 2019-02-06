@@ -44,6 +44,10 @@
                     name: "editCompany",
                     template: "edit-company/{id:int}",
                     defaults: new { controller = "Company", action = "Edit" });
+                routes.MapRoute(
+                    name: "deleteCompany",
+                    template: "delete-company/{id:int}",
+                    defaults: new { controller = "Company", action = "Delete" });
             });
             return;
         }

@@ -1,0 +1,17 @@
+﻿@model Companies.Models.Company
+
+@{
+    ViewData["Title"] = $"Firma '{Model.Title}' löschen";
+}
+
+<br />
+<h1>@ViewData["Title"]</h1>
+<br />
+<form method="post" asp-action="Delete" asp-controller="Company">
+    <p>Firma '@Model.Title' wirklich löschen?</p>
+    <div class="form-group">
+        <br />
+        <button type="submit" class="btn btn-danger" name="action">Ja, jetzt löschen</button>
+        <a class="btn btn-secondary" asp-route="editCompany" asp-route-id="@Model.Id">Abbrechen</a>
+    </div>
+</form>

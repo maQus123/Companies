@@ -1,7 +1,7 @@
 ﻿@model Companies.Models.Company
 
 @{
-    ViewData["Title"] = "Firma '" + Model.Title + "' editieren";
+    ViewData["Title"] = $"Firma '{Model.Title}' editieren";
     var parentCompanies = (IEnumerable<SelectListItem>)@ViewData["ParentCompanies"];
 }
 
@@ -41,7 +41,8 @@
     </div>
     <div class="form-group">
         <br />
-        <button type="submit" class="btn btn-primary">Speichern</button>
-        <a class="btn btn-light" asp-route="listCompanies">Abbrechen</a>
+        <button class="btn btn-primary" type="submit">Speichern</button>
+        <a class="btn btn-secondary" asp-route="listCompanies">Abbrechen</a>
+        <a class="btn btn-danger" asp-route="deleteCompany" asp-route-id="@Model.Id">Löschen</a>
     </div>
 </form>

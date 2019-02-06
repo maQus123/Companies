@@ -45,6 +45,7 @@
         public ListViewModel() {
             this.CurrentPage = 1;
             this.PageSize = ListViewModel.PAGE_SIZE;
+            this.SortBy = nameof(Company.Title);
         }
 
     }

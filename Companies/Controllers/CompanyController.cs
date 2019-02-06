@@ -43,6 +43,25 @@
         }
 
         [HttpGet]
+        public async Task<IActionResult> Delete(int id) {
+            var company = await this.companyRepository.GetSingle(id);
+            if (null == company) {
+                return NotFound();
+            }
+            return View(company);
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id, Company company) {
+            var toBeDeletedCompany = await this.companyRepository.GetSingle(id);
+            if (null == toBeDeletedCompany) {
+                return BadRequest();
+            }
+            this.companyRepository.Remove(toBeDeletedCompany);
+            return RedirectToAction("List");
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Edit(int id) {
             var company = await this.companyRepository.GetSingle(id);
             if (null == company) {
@@ -65,8 +84,7 @@
             if (existingCompany.Id != id) {
                 return BadRequest();
             }
-            var isTitleStillUnique = await this.companyRepository.IsUnique(editedCompany.Title, existingCompany.Id);
-            if (!isTitleStillUnique) {
+            if (!await this.companyRepository.IsUnique(editedCompany.Title, existingCompany.Id)) {
                 await this.PopulateListOfParentCompanies(id);
                 ModelState.AddModelError(nameof(Company.Title), "Firmenname bereits vergeben.");
                 return View(editedCompany);
