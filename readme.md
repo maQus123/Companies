@@ -5,11 +5,8 @@ Simple web application for managing companies hierarchy structures based on **AS
 <img src="screenshot.jpg" alt="Screenshot">
 
 ## Todos
-- Items auf Pagesize kürzen besser in Db statt im Speicher
+- Items auf Pagesize kürzen in Db statt im Speicher
 - Sort desc/asc anbieten
 - Pages-Anzeige kürzen wenn >5
 - UX von Tabelle für Mobil
 - UX von Formular für Breitbild
-- Code-Kommentare
-- Alphabetische Sortierung
-- HTML clutter verschönern, z.B. durch weitere TagHelper

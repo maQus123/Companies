@@ -18,10 +18,10 @@
 
         Task<bool> IsUnique(string title, int ownCompanyId = 0);
 
+        void Remove(Company company);
+
         Task Update(Company existingCompany);
 
-        void Remove(Company company);
-                
     }
 
 }

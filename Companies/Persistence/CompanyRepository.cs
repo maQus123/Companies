@@ -26,24 +26,6 @@
             return companies.Count;
         }
 
-        private async Task<ICollection<Company>> GetAll(Branch? branch, string searchText = "", string sortBy = "") {
-            var companies = this.dbContext.Companies.AsQueryable();
-            if (null != branch) {
-                companies = companies.Where(c => c.Branch == branch);
-            }
-            if (!string.IsNullOrEmpty(searchText)) {
-                searchText = searchText.ToLowerInvariant();
-                companies = companies.Where(c => 
-                    (c.Title != null && c.Title.ToLowerInvariant().Contains(searchText)) || 
-                    (c.City != null && c.City.ToLowerInvariant().Contains(searchText)) ||
-                    (c.ParentCompany != null && c.ParentCompany.Title != null && c.ParentCompany.Title.ToLowerInvariant().Contains(searchText)));
-            }
-            if (!string.IsNullOrEmpty(sortBy)) {
-                companies = companies.OrderBy(sortBy);
-            }
-            return await companies.ToListAsync();
-        }
-
         public async Task<ICollection<Company>> GetAll(int pageSize, int currentPage, Branch? branch, string searchText = "", string sortBy = "") {
             var companies = await this.GetAll(branch, searchText, sortBy);
             companies = companies.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
@@ -71,16 +53,34 @@
             return !doesOccur;
         }
 
+        public void Remove(Company company) {
+            this.dbContext.Remove(company);
+            this.dbContext.SaveChanges();
+            return;
+        }
+
         public async Task Update(Company existingCompany) {
             this.dbContext.Companies.Update(existingCompany);
             await this.dbContext.SaveChangesAsync();
             return;
         }
 
-        public void Remove(Company company) {
-            this.dbContext.Remove(company);
-            this.dbContext.SaveChanges();
-            return;
+        private async Task<ICollection<Company>> GetAll(Branch? branch, string searchText = "", string sortBy = "") {
+            var companies = this.dbContext.Companies.AsQueryable();
+            if (null != branch) {
+                companies = companies.Where(c => c.Branch == branch);
+            }
+            if (!string.IsNullOrEmpty(searchText)) {
+                searchText = searchText.ToLowerInvariant();
+                companies = companies.Where(c => 
+                    (c.Title != null && c.Title.ToLowerInvariant().Contains(searchText)) || 
+                    (c.City != null && c.City.ToLowerInvariant().Contains(searchText)) ||
+                    (c.ParentCompany != null && c.ParentCompany.Title != null && c.ParentCompany.Title.ToLowerInvariant().Contains(searchText)));
+            }
+            if (!string.IsNullOrEmpty(sortBy)) {
+                companies = companies.OrderBy(sortBy);
+            }
+            return await companies.ToListAsync();
         }
 
     }
